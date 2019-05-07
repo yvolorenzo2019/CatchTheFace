@@ -6,17 +6,60 @@
   <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
   <script src="components/loader.js"></script>
   <script src="lib/onsenui/js/onsenui.min.js"></script>
-  <script src="js/jquery-3.4.0.min.js"></script>
-
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
+  <script src="js/jquery-3.4.0.min.js"></script>
 
   <script>
- 
+    function DigaX(){
+      navigator.camera.getPicture(onSuccess, onFail, {
+      quality: 50,
+      destinationType: Camera.DestinationType.DATA_URL});
+      saveToPhotoAlbum: true;
+      
+      function onSuccess(ImageData) {
+          var image = document.getElementById('imagem');
+          image.src = "data:image/jpeg;base64," + ImageData;
+      }
+      function onFail(message) {
+          alert('Failed because: ' + message);
+      }
+      // MAPA
+      function map(position){
+        L.mapquest.key = 'lYrP4vF3Uk5zgTiGGuEzQGwGIVDGuy24';
+
+         var map = L.mapquest.map('map', {
+        center: [position.coords.latitude, position.coords.longitude],
+        layers: L.mapquest.tileLayer('map'),
+        zoom: 15
+        });
+        L.marker([position.coords.latitude, position.coords.longitude], {
+            icon: L.mapquest.icons.marker(),
+            draggable: false
+          }).bindPopup('Mongaguá, SP').addTo(map);
+
+           L.circle([position.coords.latitude, position.coords.longitude], { radius: 200 }).addTo(map);
+        map.addControl(L.mapquest.control());
+
+        $("#map").show();        
+        document.getElementById('longitude').value = position.coords.longitude;
+        document.getElementById('latitude').value = position.coords.latitude;
+      };
+      navigator.geolocation.getCurrentPosition(map);
+    };
   </script>
+  <style>
+    input{
+      display:block;
+      margin: 1px auto 1px auto;
+    }
+
+  </style>
 </head>
 <body style="background-image: url('IMG/aaa.jpg');">
   <div class="container">
@@ -26,14 +69,26 @@
       </div>
     </div>
     <div class="row">
+      <div class=" center col-xs-12">
+         <p>Latitude:</p><br><input type="text" id="latitude" onclick="DigaX()">
+         <p>Longitude:</p><br><input type="text" id="longitude" onclick="DigaX()"> <br><br>
+      </div>
+    </div>
+    <div class="row">
+       <div class="col-xs-12">
+          <img style="border-radius: 15px; transform: rotate(90deg); margin: 10px auto 10px auto"class="img-responsive" id="imagem" onclick="DigaX()">
+       </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
       <div class="col-xs-12">
-         <p>Latitude:</p>
-         <p>Longitude:</p>
+        <div class="jumbotron" style="display: none; width: 95%; height: 250px;margin: 15px auto 2px auto;background-color: white;" id="map" onclick="DigaX()"></div>
       </div>
     </div>
     <div class="row">
       <div class="col-xs-12">
-        <button class="btn" id="camera"><img src="IMG/cam.png"></button>
+        <button class="btn" id="camera" onclick="DigaX()"><img src="IMG/cam.png"></button>
     </div>
   </div>
 </body>
