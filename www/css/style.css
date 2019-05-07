@@ -52,3 +52,12 @@ p{
   text-align: center;
   color: white
 }
+#latitude{
+  border-radius: 30px;
+  border-style: none;
+}
+#longitude{
+  border-radius: 30px;
+  border-style: none;
+  
+}
